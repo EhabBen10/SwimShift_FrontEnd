@@ -1,5 +1,5 @@
 import { Home, Menu, Search, User } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { ComboboxForm } from '@/views/eventsPage/ComboboxForm'
@@ -10,9 +10,8 @@ export function PageHeader() {
   return (
     <div className="flex gap-10 lg:gap-20 justify-between pt-2 mb-6 mx-4">
       <div
-        className={`gap-4 item-center flex-shrink-0 ${
-          showFullWidthSearch ? 'hidden' : 'flex'
-        }`}>
+        className={`gap-4 item-center flex-shrink-0 ${showFullWidthSearch ? 'hidden' : 'flex'
+          }`}>
         <Button variant={'ghost'} size={'icon'} className="bg-transparent">
           <Menu className="text-black" />
         </Button>
@@ -25,9 +24,8 @@ export function PageHeader() {
         setShowFullWidthSearch={setShowFullWidthSearch}
       />
       <div
-        className={`flex-shrink-0 md:gap-2 ${
-          showFullWidthSearch ? 'hidden' : 'flex'
-        }`}>
+        className={`flex-shrink-0 md:gap-2 ${showFullWidthSearch ? 'hidden' : 'flex'
+          }`}>
         <Button
           variant={'ghost'}
           size={'icon'}

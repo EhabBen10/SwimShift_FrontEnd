@@ -1,46 +1,43 @@
 import './App.css'
-import { ApolloProvider } from '@apollo/react-hooks'
-import client from './apollo/client'
+import { gql, useQuery } from '@apollo/react-hooks'
 import { PageHeader } from './layouts/PageHeader'
 import { ShiftGridItem } from './components/ui/ShiftGridItem'
+import { Sidebar } from './layouts/SideBar'
 
+export const test = gql`
+query GetEvent{
+  get{
+      description
+      start{
+          dateTimeDateTimeOffset
+      }
+      end{
+          dateTimeDateTimeOffset
+      }
+      
+  }
+}
+`
 function App() {
-
+  const { data, loading, error } = useQuery(test);
+  console.log(data);
   return (
-    <ApolloProvider client={client}>
-      <div className="max-h-screen flex flex-col">
-        <PageHeader />
-        <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
-          <div>sidebare</div>
-          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+    <div className="max-h-screen flex flex-col">
+      <PageHeader />
+      <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
+        <Sidebar />
+        <div className="col-start-2 grid gap-3 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+          {data?.get.map((shift: any) => (
             <ShiftGridItem
-              Date="2022-01-01"
-              Hours="8"
-              Time="10:00"
-              Description="eionf"
-            />
-            <ShiftGridItem
-              Date="2022-01-01"
-              Hours="8"
-              Time="10:00"
-              Description="eionf"
-            />
-            <ShiftGridItem
-              Date="2022-01-01"
-              Hours="8"
-              Time="10:00"
-              Description="eionf"
-            />
-            <ShiftGridItem
-              Date="2022-01-01"
-              Hours="8"
-              Time="10:00"
-              Description="eionf"
-            />
-          </div>
+              Date={shift.start.dateTimeDateTimeOffset}
+              Hours="Antale timer: 8"
+              Time="Du skal arbejde fra 10:00 til 12:00"
+              Description={shift.description}
+            />))
+          }
         </div>
       </div>
-    </ApolloProvider>
+    </div>
   )
 }
 
