@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { PageHeader } from "./PageHeader";
 
 export function SideBar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -22,8 +21,8 @@ export function SideBar() {
     }, [sidebarRef]);
 
     return (<>
-        <nav className="fixed top-0 w-64 z-50 w-full border-b border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 lg:hidden">
-            <div className="px-3 py-3 lg:px-5 lg:pl-3">
+        <nav className="fixed top-0 left-0 z-50 w-full border-b border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 lg:hidden">
+            <div className="px-0 py-3 lg:px-5 lg:pl-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-start rtl:justify-end">
                         <Button variant={"ghost"} className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" onClick={toggle}>
@@ -34,7 +33,7 @@ export function SideBar() {
                 </div>
             </div>
         </nav >
-        <aside ref={sidebarRef} className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`} >
+        <aside ref={sidebarRef} className={`fixed top-0 left-0 z-40 w-50 h-screen transition-transform -translate-x-full sm:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`} >
             <div className="h-full px-3 py-4 overflow-y-auto bg-gray-200 dark:bg-gray-800">
                 <img src="src/Logo/logo.png" className="h-10 w-35 mb-5 " />
                 <hr />

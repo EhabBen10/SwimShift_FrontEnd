@@ -1,29 +1,9 @@
 import './App.css'
-import { gql, useQuery } from '@apollo/react-hooks'
-import { PageHeader } from './layouts/PageHeader'
-import { SideBarProvider } from './context/SideBarcontext'
-import { ShiftGridItem } from './components/ui/ShiftGridItem'
-import { SideBar } from './layouts/Sidebar'
+import { Shifts } from './views/eventsPage/Shifts'
 
-export const test = gql`
-query GetEvent{
-  get{
-      description
-      start{
-          dateTimeDateTimeOffset
-      }
-      end{
-          dateTimeDateTimeOffset
-      }
-      
-  }
-}
-`
 function App() {
-  const { data, loading, error } = useQuery(test);
-  console.log(data);
   return (
-
+    <Shifts />
     // <div className="max-h-screen flex flex-col">
     //   <PageHeader />
     //   <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">

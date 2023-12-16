@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\nquery GetEvent{\n  get{\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n": types.GetEventDocument,
+    "\nquery GetEvent($employeeName: String!) {\n  get(employeeName: $employeeName){\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n": types.GetEventDocument,
 };
 
 /**
@@ -33,7 +33,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\nquery GetEvent{\n  get{\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n"): (typeof documents)["\nquery GetEvent{\n  get{\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n"];
+export function graphql(source: "\nquery GetEvent($employeeName: String!) {\n  get(employeeName: $employeeName){\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n"): (typeof documents)["\nquery GetEvent($employeeName: String!) {\n  get(employeeName: $employeeName){\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

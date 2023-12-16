@@ -1,8 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeft, Check, ChevronsUpDown, Search } from 'lucide-react'
-import React from 'react'
+import { Check, ChevronsUpDown, Search } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -45,40 +44,25 @@ const FormSchema = z.object({
     required_error: 'Please choose your name',
   }),
 })
-
 interface ComboboxFormProps {
-  showFullWidthSearch: boolean
-  setShowFullWidthSearch: React.Dispatch<React.SetStateAction<boolean>>
+  onSubmit: (employeeName: string) => void;
 }
 
-export function ComboboxForm({
-  showFullWidthSearch,
-  setShowFullWidthSearch,
-}: ComboboxFormProps) {
+export function ComboboxForm(prop: ComboboxFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log('you submitted this name' + data)
+    prop.onSubmit(data.name);
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={`gap-4 flex-grow justify-center ${showFullWidthSearch ? 'flex' : 'hidden md:flex'
-          }`}>
-        {showFullWidthSearch && (
-          <Button
-            onClick={() => setShowFullWidthSearch(false)}
-            type="button"
-            size="icon"
-            variant="ghost"
-            className="flex-shrink-0">
-            <ArrowLeft className="text-gray-700" />
-          </Button>
-        )}
+        className="gap-4 flex-grow justify-center flex mt-7 lg:mt-1">
+
         <FormField
           control={form.control}
           name="name"
@@ -138,6 +122,6 @@ export function ComboboxForm({
           <Search className="text-gray-700" />
         </Button>
       </form>
-    </Form>
+    </Form >
   )
 }
