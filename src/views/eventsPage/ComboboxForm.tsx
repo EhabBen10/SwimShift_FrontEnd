@@ -67,9 +67,8 @@ export function ComboboxForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={`gap-4 flex-grow justify-center ${
-          showFullWidthSearch ? 'flex' : 'hidden md:flex'
-        }`}>
+        className={`gap-4 flex-grow justify-center ${showFullWidthSearch ? 'flex' : 'hidden md:flex'
+          }`}>
         {showFullWidthSearch && (
           <Button
             onClick={() => setShowFullWidthSearch(false)}
@@ -96,7 +95,7 @@ export function ComboboxForm({
                       )}>
                       {field.value
                         ? names.find((name) => name.label === field.value)
-                            ?.label
+                          ?.label
                         : 'Select name'}
                       <ChevronsUpDown className="ml-auto" />
                     </FormLabel>
