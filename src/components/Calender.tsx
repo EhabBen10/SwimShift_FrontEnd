@@ -11,10 +11,12 @@ import {
     isToday,
     parse,
     parseISO,
+    startOfDay,
     startOfToday,
 } from 'date-fns'
 import { ChevronLeft, ChevronRight, GripVertical } from 'lucide-react'
 import { Fragment, useState } from 'react'
+
 
 function classNames(...classes: (string | boolean)[]) {
     return classes.filter(Boolean).join(' ')

@@ -1,5 +1,5 @@
 import './App.css'
-import { Shifts } from './views/eventsPage/Shifts'
+import { Shifts } from './views/Shifts/Shifts'
 
 function App() {
   return (
