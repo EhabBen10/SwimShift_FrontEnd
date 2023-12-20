@@ -1,117 +1,66 @@
-import { Button, buttonStyle } from "@/components/ui/button";
-import { useSidebarContext } from "@/context/SideBarcontext";
-import { ChevronDown, ChevronUp, Clapperboard, Home, Repeat } from "lucide-react";
-import { Children, ElementType, ReactNode, useState } from "react";
-import { twMerge } from "tailwind-merge";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-export function Sidebar() {
-    const { isLargeOpen, isSmallOpen, close } = useSidebarContext()
-    return (
-        <>
-            <aside
-                className={`sticky top-0 overflow-y-auto scrollbar-hidden pb-4 flex flex-col ml-1 ${isLargeOpen ? "lg:hidden" : "lg:flex"
-                    } ${isSmallOpen ? "flex z[100] max-h-screen" : "hidden"}`}
-            >
-                <SmallSidebarItem Icon={Home} title="Home" url="/" />
-            </aside>
-            <aside
-                className={`w-56 lg:sticky absolute top-0 overflow-y-auto scrollbar-hidden pb-4 flex-col gap-2 px-2 ${isLargeOpen ? "lg:flex" : "lg:hidden"} ${isSmallOpen ? "hidden" : "hidden"}`}
-            >
-                <LargeSidebarSection>
-                    <LargeSidebarItem isActive IconOrImgUrl={Home} title="Home" url="/" />
-                </LargeSidebarSection>
-            </aside>
+export function SideBar() {
+    const [isOpen, setIsOpen] = useState(false);
+    const sidebarRef = useRef<HTMLDivElement | null>(null);
+    function toggle() {
+        setIsOpen(!isOpen);
+    }
+    function handleClickOutside(event: MouseEvent) {
+        if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+            setIsOpen(false);
+        }
+    }
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [sidebarRef]);
 
-        </>
-    );
-}
-
-type SmallSidebarItemProps = {
-    Icon: ElementType;
-    title: string;
-    url: string;
-}
-
-function SmallSidebarItem({ Icon, title, url }: SmallSidebarItemProps) {
-    return (
-        <a
-            href={url}
-            className={twMerge(
-                buttonStyle({ variant: "ghost" }),
-                "py-4 px-1 flex flex-col items-center rounded-lg gap-1"
-            )}
-        >
-            <Icon className="w-6 h-6" />
-            <div className="text-sm">{title}</div>
-        </a>
-    )
-}
-
-type LargeSidebarSectionProps = {
-    children: ReactNode
-    title?: string
-    visibleItemCount?: number
-}
-
-function LargeSidebarSection({ children,
-    title,
-    visibleItemCount = Number.POSITIVE_INFINITY,
-}: LargeSidebarSectionProps) {
-    const [isExpanded, setIsExpanded] = useState(false)
-    const childerenArray = Children.toArray(children).flat();
-    const showExpandButton = childerenArray.length > visibleItemCount
-    const visibleChildren = isExpanded
-        ? childerenArray
-        : childerenArray.slice(0, visibleItemCount)
-    const ButtonIcon = isExpanded ? ChevronUp : ChevronDown
-    return <div className="flex flex-col gap-4">
-        {title && <div className="text-sm font-bold">{title}</div>}
-        {visibleChildren}
-        {showExpandButton && (
-            <Button
-                onClick={() => setIsExpanded((e: any) => !e)}
-                variant="ghost"
-                className="w-full flex items-center rounded-lg gap-4 p-3"
-            >
-                <ButtonIcon className="w-6 h-6" />
-                <div>{isExpanded ? "Show Less" : "Show More"}</div>
-            </Button>
-        )}
-    </div>
-}
-
-
-
-type LargeSidebarItemProps = {
-    IconOrImgUrl: ElementType | string
-    title: string
-    url: string
-    isActive?: boolean
-}
-
-function LargeSidebarItem({
-    IconOrImgUrl,
-    title,
-    url,
-    isActive = false,
-}: LargeSidebarItemProps) {
-    return (
-        <a
-            href={url}
-            className={twMerge(
-                buttonStyle({ variant: "ghost" }),
-                `w-full flex items-center rounded-lg gap-4 p-3 ${isActive ? "font-bold bg-neutral-100 hover:bg-secondary" : undefined
-                }`
-            )}
-        >
-            {typeof IconOrImgUrl === "string" ? (
-                <img src={IconOrImgUrl} className="w-6 h-6 rounded-full" />
-            ) : (
-                <IconOrImgUrl className="w-6 h-6" />
-            )}
-            <div className="whitespace-nowrap overflow-hidden text-ellipsis">
-                {title}
+    return (<>
+        <nav className="fixed top-0 left-0 z-50 w-full border-b border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 lg:hidden">
+            <div className="px-0 py-3 lg:px-5 lg:pl-3">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-start rtl:justify-end">
+                        <Button variant={"ghost"} className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" onClick={toggle}>
+                            <Menu className="text-black" />
+                        </Button>
+                        <img src="src/Logo/logo.png" className="h-10 w-35 me-3" />
+                    </div>
+                </div>
             </div>
-        </a>
+        </nav >
+        <aside ref={sidebarRef} className={`fixed top-0 left-0 z-40 w-50 h-screen transition-transform -translate-x-full sm:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`} >
+            <div className="h-full px-3 py-4 overflow-y-auto bg-gray-200 dark:bg-gray-800">
+                <img src="src/Logo/logo.png" className="h-10 w-35 mb-5 " />
+                <hr />
+                <ul className="space-y-2 font-medium">
+                    <li>
+                        <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <svg className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                                <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
+                                <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
+                            </svg>
+                            <span className="ms-3">Shifts</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul className="space-y-2 font-medium">
+                    <li>
+                        <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <svg className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                                <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
+                                <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
+                            </svg>
+                            <span className="ms-3">Vand prøver</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside >
+    </>
     )
 }

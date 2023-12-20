@@ -242,7 +242,13 @@ export type OrganizerData = {
 
 export type Query = {
   __typename?: 'Query';
+  allShifts: Array<Event>;
   get: Array<Event>;
+};
+
+
+export type QueryGetArgs = {
+  employeeName: Scalars['String']['input'];
 };
 
 export type RemindersData = {
@@ -257,10 +263,18 @@ export type SourceData = {
   url?: Maybe<Scalars['String']['output']>;
 };
 
-export type GetEventQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllEventQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllEventQuery = { __typename?: 'Query', allShifts: Array<{ __typename?: 'Event', description?: string | null, creator?: { __typename?: 'CreatorData', displayName?: string | null } | null, start?: { __typename?: 'EventDateTime', dateTimeDateTimeOffset?: any | null } | null, end?: { __typename?: 'EventDateTime', dateTimeDateTimeOffset?: any | null } | null }> };
+
+export type GetEventQueryVariables = Exact<{
+  employeeName: Scalars['String']['input'];
+}>;
 
 
 export type GetEventQuery = { __typename?: 'Query', get: Array<{ __typename?: 'Event', description?: string | null, start?: { __typename?: 'EventDateTime', dateTimeDateTimeOffset?: any | null } | null, end?: { __typename?: 'EventDateTime', dateTimeDateTimeOffset?: any | null } | null }> };
 
 
-export const GetEventDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEvent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"get"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"start"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}},{"kind":"Field","name":{"kind":"Name","value":"end"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}}]}}]}}]} as unknown as DocumentNode<GetEventQuery, GetEventQueryVariables>;
+export const GetAllEventDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAllEvent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allShifts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"creator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"start"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}},{"kind":"Field","name":{"kind":"Name","value":"end"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}}]}}]}}]} as unknown as DocumentNode<GetAllEventQuery, GetAllEventQueryVariables>;
+export const GetEventDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEvent"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"employeeName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"get"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"employeeName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"employeeName"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"start"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}},{"kind":"Field","name":{"kind":"Name","value":"end"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}}]}}]}}]} as unknown as DocumentNode<GetEventQuery, GetEventQueryVariables>;
