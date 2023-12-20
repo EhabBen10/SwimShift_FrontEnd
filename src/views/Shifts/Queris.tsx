@@ -17,7 +17,6 @@ query GetAllEvent {
       }
 }
 `
-
 export const getSpecificName = gql`
 query GetEvent($employeeName: String!) {
   get(employeeName: $employeeName){
