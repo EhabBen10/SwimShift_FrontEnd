@@ -1,4 +1,3 @@
-import { getAllShifts, getSpecificName } from '@/views/Shifts/Queris'
 import { useQuery } from '@apollo/react-hooks'
 import { Menu, Transition } from '@headlessui/react'
 import {
@@ -15,8 +14,10 @@ import {
     parseISO,
     startOfToday,
 } from 'date-fns'
-import { ChevronLeft, ChevronRight, GripVertical } from 'lucide-react'
+import { ChevronLeft, ChevronRight, GripVertical, User } from 'lucide-react'
 import { Fragment, useState } from 'react'
+import { getAllShifts, getSpecificName } from '../Queris'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 
 function classNames(...classes: (string | boolean)[]) {
@@ -49,12 +50,12 @@ export default function Calender({ employeeName }: CalendarProps) {
     if (error) return `Error! ${error.message}`;
 
     let shifts: shift[] = [];
-    let dataToUse = employeeName != "" ? specificData?.get : data?.allShifts;
+    let dataToUse = (employeeName !== "" && employeeName !== "Alle vagter") ? specificData?.get : data?.allShifts;
 
     if (dataToUse && Array.isArray(dataToUse)) {
-        shifts = dataToUse.map((event: { creator: { displayName: any; }; start: { dateTimeDateTimeOffset: any; }; end: { dateTimeDateTimeOffset: any; }; }) => ({
+        shifts = dataToUse.map((event) => ({
             name: event.creator?.displayName || employeeName,
-            imageUrl: 'https://scontent.fcph3-1.fna.fbcdn.net/v/t39.30808-1/362293603_6474574605966051_2052022444764834091_n.jpg?stp=dst-jpg_p480x480&_nc_cat=107&ccb=1-7&_nc_sid=5740b7&_nc_ohc=V2vCMnm9i4QAX97VHs8&_nc_ht=scontent.fcph3-1.fna&oh=00_AfCkpV_-F0-1lqpYrL6uWLAi7FdopASmFTFMXRVliN2UGw&oe=65860CB4',
+            imageUrl: event.gadget?.iconLink,
             startDatetime: event.start?.dateTimeDateTimeOffset,
             endDatetime: event.end?.dateTimeDateTimeOffset,
         }));
@@ -78,6 +79,15 @@ export default function Calender({ employeeName }: CalendarProps) {
         isSameDay(parseISO(shift.startDatetime), selectedDay)
     )
 
+    const morningShifts = selectedDayMeetings.filter(shift => {
+        const startHour = new Date(shift.startDatetime).getHours();
+        return startHour >= 5 && startHour < 14;
+    });
+
+    const eveningShifts = selectedDayMeetings.filter(shift => {
+        const startHour = new Date(shift.startDatetime).getHours();
+        return startHour >= 14;
+    });
     return (
         <div className="pt-16">
             <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
@@ -166,22 +176,49 @@ export default function Calender({ employeeName }: CalendarProps) {
                     </div>
                     <section className="mt-12 md:mt-0 md:pl-14">
                         <h2 className="font-semibold text-gray-900">
-                            Schedule for{' '}
+                            Tidsplan for{' '}
                             <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
-                                {format(selectedDay, 'MMM dd, yyy')}
+                                {format(selectedDay, 'dd MMM, yyy')}
                             </time>
                         </h2>
-                        <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                            {loading ? (
-                                <p>Loading...</p>
-                            ) : selectedDayMeetings.length > 0 ? (
-                                selectedDayMeetings.map((shift) => (
-                                    <Shift shift={shift} />
-                                ))
-                            ) : (
-                                <p>We are closed this day</p>
-                            )}
-                        </ol>
+                        {loading || specificLoading ? (
+                            <p>Loading...</p>
+                        ) : selectedDayMeetings.length > 0 ? (
+                            <>
+                                {employeeName !== "" && employeeName !== "Alle vagter" ? (
+                                    <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                                        {selectedDayMeetings.map((shift) => (
+                                            <Shift shift={shift} />
+                                        ))}
+                                    </ol>
+
+                                ) : (
+                                    <Tabs defaultValue="MorgenVagt" className="font-semibold text-gray-900 w-full">
+                                        <TabsList>
+                                            <TabsTrigger value="MorgenVagt">MorgenVagt</TabsTrigger>
+                                            <TabsTrigger value="AftenVagt">AftenVagt</TabsTrigger>
+                                        </TabsList>
+                                        <TabsContent value="MorgenVagt">
+                                            <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                                                {morningShifts.map((shift) => (
+                                                    <Shift shift={shift} />
+                                                ))}
+                                            </ol>
+                                        </TabsContent>
+                                        <TabsContent value="AftenVagt">
+                                            <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                                                {eveningShifts.map((shift) => (
+                                                    <Shift shift={shift} />
+                                                ))}
+                                            </ol>
+                                        </TabsContent>
+                                    </Tabs>
+                                )}
+                            </>
+
+                        ) : (
+                            <p>Du skal ikke arbejde denne dag</p>
+                        )}
                     </section>
                 </div>
             </div>
@@ -195,11 +232,8 @@ function Shift({ shift }: { shift: shift }) {
 
     return (
         <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-            <img
-                src={shift.imageUrl}
-                alt=""
-                className="flex-none w-10 h-10 rounded-full"
-            />
+            {shift.imageUrl === "" ?
+                <User /> : <img src={shift.imageUrl} alt="" className="flex-none w-10 h-10 rounded-full" />}
             <div className="flex-auto">
                 <p className="text-gray-900">{shift.name}</p>
                 <p className="mt-0.5">

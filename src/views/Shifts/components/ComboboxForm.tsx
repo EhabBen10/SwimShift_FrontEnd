@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, ChevronsUpDown, Search } from 'lucide-react'
+import { Check, ChevronsUpDown, Import, Search } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -23,6 +23,7 @@ import {
 import { cn } from '@/lib/utils'
 
 const names = [
+  { label: 'Alle vagter' },
   { label: 'Ehab' },
   { label: 'Signe' },
   { label: 'Jonas' },
@@ -119,9 +120,17 @@ export function ComboboxForm(prop: ComboboxFormProps) {
           variant={'ghost'}
           size={'icon'}
           className="flex-shrink-0">
-          <Search className="text-gray-700" />
+          <Search />
+        </Button>
+        <Button
+          variant={'ghost'}
+          size={'icon'}
+          className="flex-shrink-0"
+          title="Import to google kalender">
+          <Import />
         </Button>
       </form>
     </Form >
+
   )
 }
