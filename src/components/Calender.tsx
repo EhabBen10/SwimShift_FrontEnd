@@ -1,3 +1,5 @@
+import { getAllShifts, getSpecificName } from '@/views/Shifts/Queris'
+import { useQuery } from '@apollo/react-hooks'
 import { Menu, Transition } from '@headlessui/react'
 import {
     add,
@@ -11,7 +13,6 @@ import {
     isToday,
     parse,
     parseISO,
-    startOfDay,
     startOfToday,
 } from 'date-fns'
 import { ChevronLeft, ChevronRight, GripVertical } from 'lucide-react'
@@ -23,7 +24,6 @@ function classNames(...classes: (string | boolean)[]) {
 }
 
 type shift = {
-    id: number;
     name: string;
     imageUrl: string;
     startDatetime: string;
@@ -31,15 +31,34 @@ type shift = {
 };
 type shifts = shift[];
 type CalendarProps = {
-    shifts: shifts;
+    employeeName?: string;
 };
 
-export default function Calender({ shifts }: CalendarProps) {
+export default function Calender({ employeeName }: CalendarProps) {
     let today = startOfToday()
     let [selectedDay, setSelectedDay] = useState(today)
     let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
     let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
+    const { data, loading, error } = useQuery(getAllShifts);
+    const { data: specificData, loading: specificLoading, error: specificError } = useQuery(getSpecificName, {
+        variables: { employeeName },
+        skip: !employeeName,
+    });
+
+    if (error) return `Error! ${error.message}`;
+
+    let shifts: shift[] = [];
+    let dataToUse = employeeName != "" ? specificData?.get : data?.allShifts;
+
+    if (dataToUse && Array.isArray(dataToUse)) {
+        shifts = dataToUse.map((event: { creator: { displayName: any; }; start: { dateTimeDateTimeOffset: any; }; end: { dateTimeDateTimeOffset: any; }; }) => ({
+            name: event.creator?.displayName || employeeName,
+            imageUrl: 'https://scontent.fcph3-1.fna.fbcdn.net/v/t39.30808-1/362293603_6474574605966051_2052022444764834091_n.jpg?stp=dst-jpg_p480x480&_nc_cat=107&ccb=1-7&_nc_sid=5740b7&_nc_ohc=V2vCMnm9i4QAX97VHs8&_nc_ht=scontent.fcph3-1.fna&oh=00_AfCkpV_-F0-1lqpYrL6uWLAi7FdopASmFTFMXRVliN2UGw&oe=65860CB4',
+            startDatetime: event.start?.dateTimeDateTimeOffset,
+            endDatetime: event.end?.dateTimeDateTimeOffset,
+        }));
+    }
     let days = eachDayOfInterval({
         start: firstDayCurrentMonth,
         end: endOfMonth(firstDayCurrentMonth),
@@ -153,12 +172,14 @@ export default function Calender({ shifts }: CalendarProps) {
                             </time>
                         </h2>
                         <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                            {selectedDayMeetings.length > 0 ? (
+                            {loading ? (
+                                <p>Loading...</p>
+                            ) : selectedDayMeetings.length > 0 ? (
                                 selectedDayMeetings.map((shift) => (
                                     <Shift shift={shift} />
                                 ))
                             ) : (
-                                <p>We are cloes this day</p>
+                                <p>We are closed this day</p>
                             )}
                         </ol>
                     </section>
