@@ -23,14 +23,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 function classNames(...classes: (string | boolean)[]) {
     return classes.filter(Boolean).join(' ')
 }
-
 type shift = {
     name: string;
     imageUrl: string;
     startDatetime: string;
     endDatetime: string;
 };
-type shifts = shift[];
 type CalendarProps = {
     employeeName?: string;
 };
@@ -118,10 +116,10 @@ export default function Calender({ employeeName }: CalendarProps) {
                             <div>S</div>
                             <div>M</div>
                             <div>T</div>
-                            <div>W</div>
+                            <div>O</div>
                             <div>T</div>
                             <div>F</div>
-                            <div>S</div>
+                            <div>L</div>
                         </div>
                         <div className="grid grid-cols-7 mt-2 text-sm">
                             {days.map((day, dayIdx) => (
@@ -193,9 +191,9 @@ export default function Calender({ employeeName }: CalendarProps) {
                                     </ol>
 
                                 ) : (
-                                    <Tabs defaultValue="MorgenVagt" className="font-semibold text-gray-900 w-full">
+                                    <Tabs defaultValue="MorgenVagt" className="font-semibold text-gray-900 mt-2">
                                         <TabsList>
-                                            <TabsTrigger value="MorgenVagt">MorgenVagt</TabsTrigger>
+                                            <TabsTrigger value="MorgenVagt" className="w-full">MorgenVagt</TabsTrigger>
                                             <TabsTrigger value="AftenVagt">AftenVagt</TabsTrigger>
                                         </TabsList>
                                         <TabsContent value="MorgenVagt">
@@ -273,11 +271,11 @@ function Shift({ shift }: { shift: shift }) {
                                     <a
                                         href="#"
                                         className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                            active ? 'bg-green-100 text-gray-900' : 'text-green-700',
                                             'block px-4 py-2 text-sm'
                                         )}
                                     >
-                                        Edit
+                                        Bytte
                                     </a>
                                 )}
                             </Menu.Item>
