@@ -23,7 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 function classNames(...classes: (string | boolean)[]) {
     return classes.filter(Boolean).join(' ')
 }
-type shift = {
+export type shift = {
     name: string;
     imageUrl: string;
     startDatetime: string;
@@ -46,6 +46,9 @@ export default function Calender({ employeeName }: CalendarProps) {
     });
 
     if (error) return `Error! ${error.message}`;
+    if (specificError) return `Error! ${specificError.message}`;
+
+
 
     let shifts: shift[] = [];
     let dataToUse = (employeeName !== "" && employeeName !== "Alle vagter") ? specificData?.get : data?.allShifts;

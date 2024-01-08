@@ -5,7 +5,7 @@ import { Check, ChevronsUpDown, Import, Search } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { Button } from '@/components/ui/button'
+import { SpecialButton } from '@/components/ui/spcialebutton'
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command'
 import {
   Form,
@@ -136,14 +136,14 @@ export function ComboboxForm(prop: ComboboxFormProps) {
               </FormItem>
             )}
           />
-          <Button
+          <SpecialButton
             type="submit"
             variant={'ghost'}
             size={'icon'}
             className="flex-shrink-0">
             <Search />
-          </Button>
-          <Button
+          </SpecialButton>
+          <SpecialButton
             type='button'
             variant={'ghost'}
             size={'icon'}
@@ -158,13 +158,14 @@ export function ComboboxForm(prop: ComboboxFormProps) {
             }}
             title="Import to google kalender">
             <Import />
-          </Button>
+          </SpecialButton>
 
         </form>
       </Form >
       <ImportDialog
         isOpen={isDialogOpen}
         onClose={closeDialog}
+        employeeName={form.getValues('name')}
       />
     </>
   )

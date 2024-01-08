@@ -223,6 +223,16 @@ export type KeyValuePairOfStringAndString = {
   value: Scalars['String']['output'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  importToGoogleCalender: Scalars['Boolean']['output'];
+};
+
+
+export type MutationImportToGoogleCalenderArgs = {
+  shifts: Array<ShiftInput>;
+};
+
 export type OfficeLocationData = {
   __typename?: 'OfficeLocationData';
   buildingId?: Maybe<Scalars['String']['output']>;
@@ -257,11 +267,26 @@ export type RemindersData = {
   useDefault?: Maybe<Scalars['Boolean']['output']>;
 };
 
+export type ShiftInput = {
+  dato?: InputMaybe<Scalars['String']['input']>;
+  day?: InputMaybe<Scalars['String']['input']>;
+  hours?: InputMaybe<Scalars['String']['input']>;
+  imgUrl?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type SourceData = {
   __typename?: 'SourceData';
   title?: Maybe<Scalars['String']['output']>;
   url?: Maybe<Scalars['String']['output']>;
 };
+
+export type ImportToGoogleCalenderMutationVariables = Exact<{
+  shifts: Array<ShiftInput> | ShiftInput;
+}>;
+
+
+export type ImportToGoogleCalenderMutation = { __typename?: 'Mutation', importToGoogleCalender: boolean };
 
 export type GetAllEventQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -276,5 +301,6 @@ export type GetEventQueryVariables = Exact<{
 export type GetEventQuery = { __typename?: 'Query', get: Array<{ __typename?: 'Event', description?: string | null, gadget?: { __typename?: 'GadgetData', iconLink?: string | null } | null, start?: { __typename?: 'EventDateTime', dateTimeDateTimeOffset?: any | null } | null, end?: { __typename?: 'EventDateTime', dateTimeDateTimeOffset?: any | null } | null }> };
 
 
+export const ImportToGoogleCalenderDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ImportToGoogleCalender"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"shifts"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ShiftInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"importToGoogleCalender"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"shifts"},"value":{"kind":"Variable","name":{"kind":"Name","value":"shifts"}}}]}]}}]} as unknown as DocumentNode<ImportToGoogleCalenderMutation, ImportToGoogleCalenderMutationVariables>;
 export const GetAllEventDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAllEvent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allShifts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"creator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}}]}},{"kind":"Field","name":{"kind":"Name","value":"gadget"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"iconLink"}}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"start"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}},{"kind":"Field","name":{"kind":"Name","value":"end"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}}]}}]}}]} as unknown as DocumentNode<GetAllEventQuery, GetAllEventQueryVariables>;
 export const GetEventDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEvent"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"employeeName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"get"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"employeeName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"employeeName"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gadget"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"iconLink"}}]}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"start"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}},{"kind":"Field","name":{"kind":"Name","value":"end"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dateTimeDateTimeOffset"}}]}}]}}]}}]} as unknown as DocumentNode<GetEventQuery, GetEventQueryVariables>;
