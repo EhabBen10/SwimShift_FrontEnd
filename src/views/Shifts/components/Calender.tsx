@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/react-hooks'
 import { Menu, Transition } from '@headlessui/react'
 import {
     add,
@@ -11,35 +12,56 @@ import {
     isToday,
     parse,
     parseISO,
-    startOfDay,
     startOfToday,
 } from 'date-fns'
-import { ChevronLeft, ChevronRight, GripVertical } from 'lucide-react'
+import { ChevronLeft, ChevronRight, GripVertical, User } from 'lucide-react'
 import { Fragment, useState } from 'react'
+import { getAllShifts, getSpecificName } from '../Queris'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ExchangeDrawer } from './ExchangeDrawer'
 
 
 function classNames(...classes: (string | boolean)[]) {
     return classes.filter(Boolean).join(' ')
 }
-
-type shift = {
-    id: number;
+export type shift = {
     name: string;
     imageUrl: string;
     startDatetime: string;
     endDatetime: string;
 };
-type shifts = shift[];
 type CalendarProps = {
-    shifts: shifts;
+    employeeName?: string;
 };
 
-export default function Calender({ shifts }: CalendarProps) {
+export default function Calender({ employeeName }: CalendarProps) {
     let today = startOfToday()
     let [selectedDay, setSelectedDay] = useState(today)
     let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
     let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
+    const { data, loading, error } = useQuery(getAllShifts);
+    const { data: specificData, loading: specificLoading, error: specificError } = useQuery(getSpecificName, {
+        variables: { employeeName },
+        skip: !employeeName,
+    });
+
+    if (error) return `Error! ${error.message}`;
+    if (specificError) return `Error! ${specificError.message}`;
+
+
+
+    let shifts: shift[] = [];
+    let dataToUse = (employeeName !== "" && employeeName !== "Alle vagter") ? specificData?.get : data?.allShifts;
+
+    if (dataToUse && Array.isArray(dataToUse)) {
+        shifts = dataToUse.map((event) => ({
+            name: event.creator?.displayName || employeeName,
+            imageUrl: event.gadget?.iconLink,
+            startDatetime: event.start?.dateTimeDateTimeOffset,
+            endDatetime: event.end?.dateTimeDateTimeOffset,
+        }));
+    }
     let days = eachDayOfInterval({
         start: firstDayCurrentMonth,
         end: endOfMonth(firstDayCurrentMonth),
@@ -59,6 +81,15 @@ export default function Calender({ shifts }: CalendarProps) {
         isSameDay(parseISO(shift.startDatetime), selectedDay)
     )
 
+    const morningShifts = selectedDayMeetings.filter(shift => {
+        const startHour = new Date(shift.startDatetime).getHours();
+        return startHour >= 5 && startHour < 14;
+    });
+
+    const eveningShifts = selectedDayMeetings.filter(shift => {
+        const startHour = new Date(shift.startDatetime).getHours();
+        return startHour >= 14;
+    });
     return (
         <div className="pt-16">
             <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
@@ -89,10 +120,10 @@ export default function Calender({ shifts }: CalendarProps) {
                             <div>S</div>
                             <div>M</div>
                             <div>T</div>
-                            <div>W</div>
+                            <div>O</div>
                             <div>T</div>
                             <div>F</div>
-                            <div>S</div>
+                            <div>L</div>
                         </div>
                         <div className="grid grid-cols-7 mt-2 text-sm">
                             {days.map((day, dayIdx) => (
@@ -147,20 +178,49 @@ export default function Calender({ shifts }: CalendarProps) {
                     </div>
                     <section className="mt-12 md:mt-0 md:pl-14">
                         <h2 className="font-semibold text-gray-900">
-                            Schedule for{' '}
+                            Tidsplan for{' '}
                             <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
-                                {format(selectedDay, 'MMM dd, yyy')}
+                                {format(selectedDay, 'dd MMM, yyy')}
                             </time>
                         </h2>
-                        <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                            {selectedDayMeetings.length > 0 ? (
-                                selectedDayMeetings.map((shift) => (
-                                    <Shift shift={shift} />
-                                ))
-                            ) : (
-                                <p>We are cloes this day</p>
-                            )}
-                        </ol>
+                        {loading || specificLoading ? (
+                            <p>Loading...</p>
+                        ) : selectedDayMeetings.length > 0 ? (
+                            <>
+                                {employeeName !== "" && employeeName !== "Alle vagter" ? (
+                                    <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                                        {selectedDayMeetings.map((shift) => (
+                                            <Shift shift={shift} />
+                                        ))}
+                                    </ol>
+
+                                ) : (
+                                    <Tabs defaultValue="MorgenVagt" className="font-semibold text-gray-900 mt-2">
+                                        <TabsList>
+                                            <TabsTrigger value="MorgenVagt" className="w-full">MorgenVagt</TabsTrigger>
+                                            <TabsTrigger value="AftenVagt">AftenVagt</TabsTrigger>
+                                        </TabsList>
+                                        <TabsContent value="MorgenVagt">
+                                            <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                                                {morningShifts.map((shift) => (
+                                                    <Shift shift={shift} />
+                                                ))}
+                                            </ol>
+                                        </TabsContent>
+                                        <TabsContent value="AftenVagt">
+                                            <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                                                {eveningShifts.map((shift) => (
+                                                    <Shift shift={shift} />
+                                                ))}
+                                            </ol>
+                                        </TabsContent>
+                                    </Tabs>
+                                )}
+                            </>
+
+                        ) : (
+                            <p>Du skal ikke arbejde denne dag</p>
+                        )}
                     </section>
                 </div>
             </div>
@@ -168,17 +228,23 @@ export default function Calender({ shifts }: CalendarProps) {
     )
 }
 
-function Shift({ shift }: { shift: shift }) {
+export function Shift({ shift }: { shift: shift }) {
     let startDateTime = parseISO(shift.startDatetime)
     let endDateTime = parseISO(shift.endDatetime)
 
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const openDrawer = () => {
+        setIsDrawerOpen(true);
+    };
+
+    const closeDrawer = () => {
+        setIsDrawerOpen(false);
+    };
+
     return (
         <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-            <img
-                src={shift.imageUrl}
-                alt=""
-                className="flex-none w-10 h-10 rounded-full"
-            />
+            {shift.imageUrl === "" ?
+                <User /> : <img src={shift.imageUrl} alt="" className="flex-none w-10 h-10 rounded-full" />}
             <div className="flex-auto">
                 <p className="text-gray-900">{shift.name}</p>
                 <p className="mt-0.5">
@@ -215,34 +281,36 @@ function Shift({ shift }: { shift: shift }) {
                         <div className="py-1">
                             <Menu.Item>
                                 {({ active }) => (
-                                    <a
-                                        href="#"
+                                    <button
+                                        type="button"
+                                        onClick={() => openDrawer()}
                                         className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
+                                            active ? 'bg-green-100 text-gray-900 w-36' : 'text-green-700',
+                                            'block px-4 py-2 text-sm w-36'
                                         )}
                                     >
-                                        Edit
-                                    </a>
+                                        Bytte
+                                    </button>
                                 )}
                             </Menu.Item>
                             <Menu.Item>
                                 {({ active }) => (
-                                    <a
-                                        href="#"
+                                    <button
+                                        type="button"
                                         className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
+                                            active ? 'bg-green-100 text-gray-900 w-36' : 'text-green-700',
+                                            'block px-4 py-2 text-sm w-36'
                                         )}
                                     >
-                                        Cancel
-                                    </a>
+                                        vd
+                                    </button>
                                 )}
                             </Menu.Item>
                         </div>
                     </Menu.Items>
                 </Transition>
             </Menu>
+            <ExchangeDrawer isOpen={isDrawerOpen} onClose={closeDrawer} shiftToExchange={shift} />
         </li>
     )
 }

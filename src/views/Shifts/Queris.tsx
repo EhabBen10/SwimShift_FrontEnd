@@ -6,6 +6,9 @@ query GetAllEvent {
         creator{
           displayName
         }
+        gadget{
+            iconLink
+          }
           description
           start{
               dateTimeDateTimeOffset
@@ -20,6 +23,9 @@ query GetAllEvent {
 export const getSpecificName = gql`
 query GetEvent($employeeName: String!) {
   get(employeeName: $employeeName){
+    gadget{
+        iconLink
+      }
       description
       start{
           dateTimeDateTimeOffset
