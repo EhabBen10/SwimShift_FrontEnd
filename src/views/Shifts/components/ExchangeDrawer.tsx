@@ -65,7 +65,7 @@ export function ExchangeDrawer(props: ExchangeDrawerProps) {
                         <DrawerTitle>Hvem vil du bytte med</DrawerTitle>
                     </DrawerHeader>
                     <ComboboxForm onSubmit={setemployeeName} exchangeDrawer={true} />
-                    <div className="p-0 pt-4 pb-0 overflow-y-auto h-128">
+                    <div className="p-0 pt-4 pb-0 overflow-y-auto h-64">
                         <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
                             {shifts.map((shift) => (
                                 <ShiftToExchange shift={shift} />
