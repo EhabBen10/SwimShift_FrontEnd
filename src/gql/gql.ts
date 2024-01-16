@@ -16,6 +16,7 @@ const documents = {
     "\nmutation ImportToGoogleCalender($shifts: [ShiftInput!]!){\n importToGoogleCalender(shifts: $shifts)\n}\n": types.ImportToGoogleCalenderDocument,
     "\nquery GetAllEvent {\n    allShifts{\n        creator{\n          displayName\n        }\n        gadget{\n            iconLink\n          }\n          description\n          start{\n              dateTimeDateTimeOffset\n          }\n          end{\n              dateTimeDateTimeOffset\n          }\n          \n      }\n}\n": types.GetAllEventDocument,
     "\nquery GetEvent($employeeName: String!) {\n  get(employeeName: $employeeName){\n    gadget{\n        iconLink\n      }\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n": types.GetEventDocument,
+    "\nmutation UploadToDB($input: UploadToDbInput!) {\n    uploadToDB(input: $input) {\n            uploadedEmploee {name}\n      }\n    }\n": types.UploadToDbDocument,
 };
 
 /**
@@ -44,6 +45,10 @@ export function graphql(source: "\nquery GetAllEvent {\n    allShifts{\n        
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\nquery GetEvent($employeeName: String!) {\n  get(employeeName: $employeeName){\n    gadget{\n        iconLink\n      }\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n"): (typeof documents)["\nquery GetEvent($employeeName: String!) {\n  get(employeeName: $employeeName){\n    gadget{\n        iconLink\n      }\n      description\n      start{\n          dateTimeDateTimeOffset\n      }\n      end{\n          dateTimeDateTimeOffset\n      }\n      \n  }\n}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\nmutation UploadToDB($input: UploadToDbInput!) {\n    uploadToDB(input: $input) {\n            uploadedEmploee {name}\n      }\n    }\n"): (typeof documents)["\nmutation UploadToDB($input: UploadToDbInput!) {\n    uploadToDB(input: $input) {\n            uploadedEmploee {name}\n      }\n    }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

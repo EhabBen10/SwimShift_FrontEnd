@@ -1,5 +1,3 @@
-'use client'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronsUpDown, Import, Search } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -59,6 +57,7 @@ const FormSchema = z.object({
 })
 interface ComboboxFormProps {
   onSubmit: (employeeName: string) => void;
+  exchangeDrawer?: boolean;
 }
 
 export function ComboboxForm(prop: ComboboxFormProps) {
@@ -107,7 +106,7 @@ export function ComboboxForm(prop: ComboboxFormProps) {
                       </FormLabel>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className=" w-[200px] p-0 overflow-y-auto max-h-[400px]">
+                  <PopoverContent className=" w-[200px] p-0 overflow-auto hover:overflow-scroll max-h-[400px]">
                     <Command>
                       <CommandGroup>
                         {names.map((name) => (
@@ -143,22 +142,25 @@ export function ComboboxForm(prop: ComboboxFormProps) {
             className="flex-shrink-0">
             <Search />
           </SpecialButton>
-          <SpecialButton
-            type='button'
-            variant={'ghost'}
-            size={'icon'}
-            className="flex-shrink-0"
-            onClick={async () => {
-              const isValid = await form.trigger('name');
-              if (!isValid) {
-                // The 'name' field is invalid. The error message will be displayed under the form field.
-              } else if (form.getValues('name') === 'Alle vagter' || isValid) {
-                { openDialog() }
-              }
-            }}
-            title="Import to google kalender">
-            <Import />
-          </SpecialButton>
+
+          {!prop.exchangeDrawer && (
+            <SpecialButton
+              type="button"
+              variant={'ghost'}
+              size={'icon'}
+              className="flex-shrink-0"
+              onClick={async () => {
+                const isValid = await form.trigger('name');
+                if (!isValid) {
+                  // The 'name' field is invalid. The error message will be displayed under the form field.
+                } else if (form.getValues('name') === 'Alle vagter' || isValid) {
+                  openDialog();
+                }
+              }}
+              title="Import to google kalender">
+              <Import />
+            </SpecialButton>
+          )}
 
         </form>
       </Form >

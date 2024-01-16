@@ -18,6 +18,7 @@ import { ChevronLeft, ChevronRight, GripVertical, User } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import { getAllShifts, getSpecificName } from '../Queris'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ExchangeDrawer } from './ExchangeDrawer'
 
 
 function classNames(...classes: (string | boolean)[]) {
@@ -227,9 +228,18 @@ export default function Calender({ employeeName }: CalendarProps) {
     )
 }
 
-function Shift({ shift }: { shift: shift }) {
+export function Shift({ shift }: { shift: shift }) {
     let startDateTime = parseISO(shift.startDatetime)
     let endDateTime = parseISO(shift.endDatetime)
+
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const openDrawer = () => {
+        setIsDrawerOpen(true);
+    };
+
+    const closeDrawer = () => {
+        setIsDrawerOpen(false);
+    };
 
     return (
         <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
@@ -271,34 +281,36 @@ function Shift({ shift }: { shift: shift }) {
                         <div className="py-1">
                             <Menu.Item>
                                 {({ active }) => (
-                                    <a
-                                        href="#"
+                                    <button
+                                        type="button"
+                                        onClick={() => openDrawer()}
                                         className={classNames(
-                                            active ? 'bg-green-100 text-gray-900' : 'text-green-700',
-                                            'block px-4 py-2 text-sm'
+                                            active ? 'bg-green-100 text-gray-900 w-36' : 'text-green-700',
+                                            'block px-4 py-2 text-sm w-36'
                                         )}
                                     >
                                         Bytte
-                                    </a>
+                                    </button>
                                 )}
                             </Menu.Item>
                             <Menu.Item>
                                 {({ active }) => (
-                                    <a
-                                        href="#"
+                                    <button
+                                        type="button"
                                         className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
+                                            active ? 'bg-green-100 text-gray-900 w-36' : 'text-green-700',
+                                            'block px-4 py-2 text-sm w-36'
                                         )}
                                     >
-                                        Cancel
-                                    </a>
+                                        vd
+                                    </button>
                                 )}
                             </Menu.Item>
                         </div>
                     </Menu.Items>
                 </Transition>
             </Menu>
+            <ExchangeDrawer isOpen={isDrawerOpen} onClose={closeDrawer} shiftToExchange={shift} />
         </li>
     )
 }
